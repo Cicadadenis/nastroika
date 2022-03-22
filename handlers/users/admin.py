@@ -246,9 +246,10 @@ async def receive_com(message: Message, state: FSMContext):
             sessions.append(StringSession(auth_key))
 
             logger.info("Проверка аккаунтов")
-
+            j = 0
             for session in sessions:
-                await message.edit_text(f"<b>Подключаю Акаунт № {len(session)}</b>")
+                await message.edit_text(f"<b>Подключаю Акаунт № {xx[j]}</b>")
+                j = j + 1
                 client = TelegramClient(
                     session,
                     api_hash=API_HASH,
