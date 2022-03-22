@@ -96,15 +96,10 @@ async def use(call: CallbackQuery, state: FSMContext):
     
 @dp.callback_query_handler(text="spisok_us")
 async def usse(call: CallbackQuery):
-    info = open('ussers.txt', 'r').read()
-    if len(info) > 100:
-        for x in range(0, len(info), 100):
-            await call.message.answer(info[x:x+100])
-    else:
-        await call.message.answer(info)
+    ss = open('ussers.txt', 'r').read()
     if len(ss) <= 1:
         await call.answer("Список Пуст !")
-    await call.message.answer(info, reply_markup=back_to_main_menu)
+    await call.message.answer(ss, reply_markup=back_to_main_menu)
   
 
 @dp.callback_query_handler(text="adusse", state='*')
@@ -118,10 +113,15 @@ async def adusse(call: CallbackQuery):
 async def adusse(message: Message, state: FSMContext):
     data = await state.get_data()
     name_x = message.text
-    ss = open('ussers.txt', 'r').readlines()
-    ss.append(f'{name_x}\n')
-    with open('ussers.txt', 'w') as f:
-        f.writelines(ss)
+    if len(name_x) >= 49:
+        await message.answer("<b>Список более 50 username\n"
+                            f"закидуй текстовиком \n"
+                            f"каждый юзик с новой строки</b>")
+    if len(name_x) > 10:
+        for x in range(0, len(name_x), 10):
+            with open('ussers.txt', 'a') as f:
+                f.writelines(name_x[x:x+20])
+   
     new_us = open('ussers.txt', 'r').read()
     await message.answer(new_us, reply_markup=back_to_main_menu)
 
@@ -369,9 +369,7 @@ async def pusk_start(call: CallbackQuery):
                         f"<code>{sms}</code>\n"
                         f"<b>Пользователю:</b> <code>{ss[x][:-1]}</code>\n"
                         f"<b>Тайминг паузы установлен на {ti} секунд</b>\n"
-                        f"<b>Всего отправленно смс:</b>    <code>{msm}</code>\n",
-                        reply_markup=STOP
-                        )
+                        f"<b>Всего отправленно смс:</b>    <code>{msm}</code>\n")
                     time.sleep(ti)
             except:
                 
