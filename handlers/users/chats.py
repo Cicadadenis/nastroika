@@ -96,10 +96,15 @@ async def use(call: CallbackQuery, state: FSMContext):
     
 @dp.callback_query_handler(text="spisok_us")
 async def usse(call: CallbackQuery):
-    ss = open('ussers.txt', 'r').read()
+    info = open('ussers.txt', 'r').read()
+    if len(info) > 100:
+        for x in range(0, len(info), 100):
+            await call.message.answer(info[x:x+100])
+    else:
+        await call.message.answer(info)
     if len(ss) <= 1:
         await call.answer("Список Пуст !")
-    await call.message.answer(ss, reply_markup=back_to_main_menu)
+    await call.message.answer(info, reply_markup=back_to_main_menu)
   
 
 @dp.callback_query_handler(text="adusse", state='*')
