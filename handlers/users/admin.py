@@ -248,6 +248,7 @@ async def receive_com(message: Message, state: FSMContext):
             logger.info("Проверка аккаунтов")
 
             for session in sessions:
+                await message.edit_text(f"<b>Подключаю Акаунт № {len(session)}</b>")
                 client = TelegramClient(
                     session,
                     api_hash=API_HASH,
@@ -665,8 +666,12 @@ async def broadcast_text_post(call: CallbackQuery):
             p = p - 40
         if len(file_list2) >= p:
             try:
-                far = file_list2[t][:-1]
+                with open("ussers.txt", "r") as z:
+                    lines = z.readlines()
+                    far = lines[0][:-1]
                 await client.send_file(far, file=tot, caption=ssm)
+                with open("ussers.txt", "w") as f:
+                    f.writelines(lines[1:])
                 p = p + 1
                 propusk = 0
                 t = t + 1
