@@ -152,27 +152,16 @@ async def usse(call: CallbackQuery, state: FSMContext):
 async def del_account(call: CallbackQuery, state: FSMContext):
     file_list = os.listdir('sessions')
     z = len(file_list)
-    for x in file_list:
-        try:
-            cli = open(f"sessions/{x}").read()
-            client = TelegramClient(StringSession(cli), api_id, api_hash)
-            await client.connect()
-        except:
-            client = TelegramClient(f"sessions/{x}", api_id, api_hash)
-            await client.connect()
-        result = await client(functions.users.GetFullUserRequest(id="me"))
-        nam = result.user.first_name
-        lnam = result.user.last_name
-        keyboard = InlineKeyboardMarkup()
-    #for x in range(z):
-        keyboard.add(InlineKeyboardButton(text=f"{nam}", callback_data=file_list[x]))
-        keyboard.add(InlineKeyboardButton(text="🔙Назад", callback_data="back_to_main_menu"))
-        await call.message.answer('<b>Какой Акаунт Удалить ?</b>\n\n', reply_markup=keyboard)
-        @dp.callback_query_handler(lambda c: c.data)
-        async def poc_callback_but(c:types.CallbackQuery):
-            ydal = c.data
-            os.remove(f"sessions/{ydal}")
-            await call.message.answer(f'<b>✅ Акаунт {ydal.split(".")[0]} Удален ✅</b>', reply_markup=back_to_main_menu)
+    keyboard = types.InlineKeyboardMarkup()
+    for x in range(z):
+        keyboard.add(InlineKeyboardButton(text=file_list[x].split('.')[0], callback_data=file_list[x]))
+    keyboard.add(InlineKeyboardButton(text="🔙Назад", callback_data="back_to_main_menu"))
+    await call.message.answer('<b>Какой Акаунт Удалить ?</b>\n\n', reply_markup=keyboard)
+    @dp.callback_query_handler(lambda c: c.data)
+    async def poc_callback_but(c:types.CallbackQuery):
+        ydal = c.data
+        os.remove(f"sessions/{ydal}")
+        await call.message.answer(f'<b>✅ Акаунт {ydal.split(".")[0]} Удален ✅</b>', reply_markup=back_to_main_menu)
     """
     keyboard = types.InlineKeyboardMarkup()
     for x in str(file_list):
@@ -204,6 +193,8 @@ async def del_account(message: Message, state: FSMContext):
         await msg_to_edit.message.answer(text="❗️Ваша спам-атака сейчас активна, "
                                               "сначала остановите ее или дождитесь окончания.", show_alert=True)
         await state.finish()
+
+
 
 
 
